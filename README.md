@@ -1,5 +1,11 @@
 # Diddi and the Bugs
 
+[![Nox](https://img.shields.io/badge/%F0%9F%A6%8A-Nox-D85E00.svg)](https://github.com/wntrblm/nox)
+[![License](https://img.shields.io/github/license/DiddiLeija/diddi-and-the-bugs)](https://github.com/DiddiLeija/diddi-and-the-bugs)
+[![GitHub](https://img.shields.io/github/v/release/DiddiLeija/diddi-and-the-bugs?logo=github&sort=semver)](https://github.com/DiddiLeija/diddi-and-the-bugs)
+[![GitHub Repo stars](https://img.shields.io/github/stars/DiddiLeija/diddi-and-the-bugs?style=social)](https://github.com/DiddiLeija/diddi-and-the-bugs)
+[![GitHub forks](https://img.shields.io/github/forks/DiddiLeija/diddi-and-the-bugs?style=social)](https://github.com/DiddiLeija/diddi-and-the-bugs)
+
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/G2G3AL6D6)
 
 My Game Off 2021 entry.
@@ -9,8 +15,8 @@ My Game Off 2021 entry.
 > The Earth is under invasion. A fleet of giant bugs, bacteria, and viruses are
 > outside of the planet.
 >
-> In the meantime, Diddi was developing a secret spacecraft. When his frineds told him of
-> the invasion, he decided to visit the brilliant Dr. Chuck (a scientist, and also
+> In the meantime, Diddi was developing a secret spacecraft. When his friends told him of
+> the invasion, Diddi decided to visit the brilliant Dr. Chuck (a scientist, and also
 > an old friend of Diddi). The doctor gave him the **L1-F3** experimental serum, that kills anything
 > alive. That should destroy those bugs...
 >
@@ -65,7 +71,7 @@ Read [this contributing guidelines](https://github.com/DiddiLeija/diddi-and-the-
 
 ### Discord server
 
-There's a Discord server (_DiddiLeija's Server_) where you can ask and share stuff related to Diddi and The Bugs! **Wanna join? https://discord.gg/DfrHxT9ENy**
+There's a Discord server (officially named _DiddiLeija's Server_) where you can ask and share stuff related to Diddi and The Bugs! **Wanna join? https://discord.gg/DfrHxT9ENy**
 
 ### Wiki
 
