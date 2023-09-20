@@ -3,6 +3,7 @@ The piece of code that puts everything together.
 """
 
 import glob
+import os
 import random
 import sys
 
@@ -24,6 +25,19 @@ pyxel.init(180, 140, title="Diddi and the Bugs")
 # frames. This means the special effect will last
 # 20 frames, and then everything will turn back to normal.
 Z_ANIMATION_TIME = 20
+
+# This is a list of "preferred skin packs" (those skins bundled
+# in our default edition), which will be shown first if we find them.
+SKINS_PREFERENCES = ["resource_diddi.pyxres", "resource_training_eli.pyxres"]
+
+
+def get_found_skins(resource_list: list):
+    "From a list of filenames, only return the filenames that exist."
+    final = []
+    for f in resource_list:
+        if os.path.exists(f):
+            final.append(f)
+    return final
 
 
 def get_skin_name(resource_filename: str):
@@ -292,9 +306,6 @@ class App:
         # the app quits.
         self.messages = []
 
-        # self.skins = ["resource.pyxres", "resource_2.pyxres"]
-        # self.current_skin = 0
-
         self.load_skins()
 
         pyxel.load(self.skins[self.current_skin])
@@ -318,11 +329,30 @@ class App:
         self.startup()
         pyxel.run(self.update, self.draw)
 
+    # Loads all the skins in the current dir named in the format resource_NAME_HERE.pyxres
+    # They are split into pages of 5 each
     def load_skins(self):
-        # TODO: Currently only 5 skins can fit well onscreen, maybe even 6, but no more
-        self.skins = sorted(glob.glob("*.pyxres"))
-        self.skins = self.skins[:5]
+        self.skins = get_found_skins(SKINS_PREFERENCES)
+        for i in sorted(glob.glob("resource_*.pyxres")):
+            if i not in SKINS_PREFERENCES:
+                self.skins.append(i)
+
+        page = 1
+        self.paged_skins = []
+        start = (page - 1) * 5
+        end = page * 5
+        page_skins = self.skins[start:end]
+
+        while page_skins:
+            self.paged_skins.append(page_skins)
+            page += 1
+            start = (page - 1) * 5
+            end = page * 5
+            page_skins = self.skins[start:end]
+
         self.current_skin = 0
+        self.current_page = 0
+        self.total_pages = len(self.paged_skins)
 
     def reset_game(self):
         self.alive = True  # the player is still alive
@@ -691,19 +721,25 @@ at github.com/DiddiLeija/diddi-and-the-bugs
             if pyxel.btnp(pyxel.KEY_UP):
                 if self.current_skin > 0:
                     self.current_skin -= 1
-                    pyxel.load(self.skins[self.current_skin])
+                    pyxel.load(self.paged_skins[self.current_page][self.current_skin])
 
             if pyxel.btnp(pyxel.KEY_DOWN):
-                if self.current_skin < len(self.skins) - 1:
+                if self.current_skin < len(self.paged_skins[self.current_page]) - 1:
                     self.current_skin += 1
-                    pyxel.load(self.skins[self.current_skin])
+                    pyxel.load(self.paged_skins[self.current_page][self.current_skin])
 
-            for index, skin in enumerate(self.skins):
-                if pyxel.btnp(getattr(pyxel, f"KEY_{index+1}")) or pyxel.btnp(
-                    getattr(pyxel, f"KEY_KP_{index+1}")
-                ):
-                    self.current_skin = index
-                    pyxel.load(self.skins[self.current_skin])
+            if pyxel.btnp(pyxel.KEY_LEFT):
+                if self.current_page > 0:
+                    self.current_page -= 1
+                    self.current_skin = 0
+                    pyxel.load(self.paged_skins[self.current_page][self.current_skin])
+
+            if pyxel.btnp(pyxel.KEY_RIGHT):
+                if self.current_page < len(self.paged_skins) - 1:
+                    self.current_page += 1
+                    self.current_skin = 0
+                    pyxel.load(self.paged_skins[self.current_page][self.current_skin])
+
         # Kill all those stars who left the screen
         for star_pos in range(len(self.menu_stars)):
             try:
@@ -782,28 +818,32 @@ at github.com/DiddiLeija/diddi-and-the-bugs
             pyxel.text(16, 25, "=== Choose A Skin Pack ===", 1)
             pyxel.text(15, 25, "=== Choose A Skin Pack ===", 7)
 
-            for index, skin in enumerate(self.skins):
+            for index, skin in enumerate(self.paged_skins[self.current_page]):
                 # Skin N
                 pyxel.text(
                     26,
                     35 + index * 10,
-                    f"[{index+1}] {get_skin_name(skin)}"
+                    f"[{(index+1) + (self.current_page*5)}] {get_skin_name(skin)}"
                     + (" <-" if self.current_skin == index else ""),
                     1,
                 )
                 pyxel.text(
                     25,
                     35 + index * 10,
-                    f"[{index+1}] {get_skin_name(skin)}"
+                    f"[{(index+1) + (self.current_page*5)}] {get_skin_name(skin)}"
                     + (" <-" if self.current_skin == index else ""),
                     7,
                 )
+            # Page Counter
+            pyxel.text(70, 95, f"=== {self.current_page+1}/{self.total_pages} ===", 1)
+            pyxel.text(69, 95, f"=== {self.current_page+1}/{self.total_pages} ===", 7)
+
             # Escape option
-            pyxel.text(26, 95, "Press SPACE to return", 1)
-            pyxel.text(25, 95, "Press SPACE to return", 7)
+            pyxel.text(26, 105, "Press SPACE to return", 1)
+            pyxel.text(25, 105, "Press SPACE to return", 7)
         # Quit option
-        pyxel.text(26, 105, "Press Q to quit", 1)
-        pyxel.text(25, 105, "Press Q to quit", 7)
+        pyxel.text(26, 115, "Press Q to quit", 1)
+        pyxel.text(25, 115, "Press Q to quit", 7)
 
 
 App()
